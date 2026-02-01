@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffe0ba;
+  --foreground: #100414;
+}
+
+/* Theme palettes: toggled by setting `data-theme` on the <html> element. */
+html[data-theme="p0"] { --background: #ffe0ba; --foreground: #100414; }
+html[data-theme="p1"] { --background: #e6f7ff; --foreground: #003049; }
+html[data-theme="p2"] { --background: #e8fff4; --foreground: #003827; }
+html[data-theme="p3"] { --background: #fff7e6; --foreground: #7a2b1f; }
+html[data-theme="p4"] { --background: #f5e8ff; --foreground: #2e004f; }
+
+/* Theme switcher button */
+.theme-switcher { position: fixed; bottom: 14px; right: 14px; z-index: 9999; }
+.theme-switcher-button { width: 24px; height: 24px; border-radius: 9999px; display:flex; align-items:center; justify-content:center; border:2px solid var(--foreground); background: transparent; color:var(--background); cursor:pointer; box-shadow: none; padding: 0; }
+.theme-switcher-button:focus { outline: 2px solid var(--foreground); outline-offset: 2px }
+.theme-switcher-dot { width: 12px; height: 12px; border-radius: 9999px; background: var(--background); border: 1px solid var(--foreground); }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffe0ba;
+    --foreground: #100414;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Simple, semantic helpers to keep Tailwind utilities for layout but
+   centralize colours and borders on CSS variables. */
+.module-divider,
+.module-divider-inline {
+  /* Use a border-top so the divider renders like other 1px borders
+     (more consistent across devices / DPI than a 1px-high background). */
+  height: 0;
+  border: 0;
+  border-top: 1px solid var(--foreground);
+  margin: 0.5rem 0;
+  width: 100%;
+  display: block;
+}
+
+.text-foreground { color: var(--foreground); }
+.text-background { color: var(--background); }
+.bg-foreground { background: var(--foreground); }
+.bg-background { background: var(--background); }
+.border-foreground { border-color: var(--foreground); }
+
+.module-card {
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--foreground);
+  box-shadow: none;
+}
+
+/* Keep sitewide sharp corners */
+* { border-radius: 0 !important; }
+
+/* Queue module specific helpers */
+.queue-chart-container { min-height: 120px; max-height: 400px; }
+.queue-svg { display: block; width: 100%; height: 100%; }
+.queue-legend { margin-top: 0.25rem; display:flex; justify-content:center; gap:0.75rem; font-size:0.75rem; flex-wrap:nowrap; align-items:center; }
+.queue-legend svg { vertical-align:middle; width:12px; height:12px }
+
+/* hover and animation for bar values */
+.queue .bar-value { opacity: 0; transform: translateY(-18px); transition: transform 180ms ease, opacity 180ms; transform-box: fill-box; transform-origin: center top; pointer-events: none; font-weight: 600; }
+/* only show value when hovering the user's solid overlay */
+.queue .user-overlay:hover ~ .bar-value { opacity: 1; transform: translateY(0); }
+/* also allow toggling via a `.visible` class (used when the text is kept in DOM) */
+.queue .bar-value.visible { opacity: 1; transform: translateY(0); }
+
+/* Custom select (status) styles */
+.custom-select { position: relative; }
+.custom-select { position: relative; width: 100%; }
+.custom-select-button { width: 100%; display:flex; align-items:center; justify-content:space-between; padding:0.5rem 0.5rem; border:1px solid var(--foreground); background:var(--background); color:var(--foreground); cursor:pointer; }
+.custom-select-button:focus { outline:2px solid var(--foreground); outline-offset:2px }
+.custom-select-list { position:absolute; left:0; right:0; margin-top:0.25rem; background:var(--background); border:1px solid var(--foreground); z-index:10000; max-height:0; overflow:hidden; transform-origin:top; transform: translateY(-6px); opacity:0; transition: transform 180ms ease, opacity 180ms ease; box-shadow: 0 4px 8px rgba(0,0,0,0.04); }
+.custom-select.open .custom-select-list { max-height:none; overflow:visible; transform: translateY(0); opacity:1; }
+.custom-select-item { padding:0.5rem 0.7rem; display:flex; align-items:center; gap:0.5rem; cursor:pointer; transition: background-color 160ms ease, color 160ms ease; font-size:0.9rem; }
+.custom-select-item + .custom-select-item { border-top: 1px solid var(--foreground); }
+.custom-select-item:hover { background: var(--foreground); color: var(--background); }
+.status-dot { display: none !important; }
+
+/* Allow the ThemeSwitcher to keep a circular shape despite the global reset */
+.theme-switcher-button,
+.theme-switcher-dot {
+  border-radius: 9999px !important;
+}
