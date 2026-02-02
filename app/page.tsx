@@ -47,6 +47,32 @@ function TimePill() {
   );
 }
 
+function CallToggleButton({ inCall, onToggle }: { inCall: boolean; onToggle: () => void }) {
+  return (
+    <button
+      onClick={onToggle}
+      style={{
+        position: "fixed",
+        top: "14px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        padding: "4px 16px",
+        background: inCall ? "var(--foreground)" : "var(--background)",
+        color: inCall ? "var(--background)" : "var(--foreground)",
+        border: "1px solid var(--foreground)",
+        fontSize: "11px",
+        fontWeight: 600,
+        letterSpacing: "0.05em",
+        zIndex: 1000,
+        cursor: "none",
+        transition: "background 0.2s ease, color 0.2s ease",
+      }}
+    >
+      {inCall ? "END CALL" : "START CALL"}
+    </button>
+  );
+}
+
 type Module = {
   id: string;
   title: string;
@@ -108,6 +134,7 @@ export default function Home() {
   const [modules, setModules] = useState<Module[]>(initialModules);
   const [dragId, setDragId] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [inCall, setInCall] = useState(false);
 
   const nodeRefs = useRef<Record<string, HTMLElement | null>>({});
   const prevRects = useRef<Record<string, DOMRect>>({});
@@ -204,6 +231,24 @@ export default function Home() {
     // keep refs / layout stable
   }, [modules.length]);
 
+  function toggleCall() {
+    captureRects();
+    setInCall((prev) => !prev);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => runFLIPAnimation(prevRects.current));
+    });
+  }
+
+  // Filter modules based on call state, with Transcript always first when in call
+  const visibleModules = (() => {
+    const transcript = modules.find((m) => m.component === "Transcript");
+    const others = modules.filter((m) => m.component !== "Transcript");
+    if (inCall && transcript) {
+      return [transcript, ...others];
+    }
+    return others;
+  })();
+
   const masonryBreakpoints = {
     default: 3,
     1000: 2,
@@ -213,13 +258,14 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full p-6 pt-16 flex items-center justify-center overflow-x-auto">
       <TimePill />
+      <CallToggleButton inCall={inCall} onToggle={toggleCall} />
       <div style={{ width: "fit-content" }}>
         <Masonry
           breakpointCols={masonryBreakpoints}
           className="masonry-grid"
           columnClassName="masonry-column"
         >
-          {modules.map((m) => {
+          {visibleModules.map((m) => {
             const ModuleComponent = m.component ? moduleComponents[m.component] ?? null : null;
             return (
               <ModuleCard
