@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
 import Masonry from "react-masonry-css";
 import Schedule from "../components/modules/Schedule";
 import Transcript from "../components/modules/Transcript";
@@ -8,6 +8,44 @@ import StatusSelector from "../components/modules/StatusSelector";
 import KPIs from "../components/modules/KPIs";
 import QueueOverview from "../components/modules/QueueOverview";
 import QueueList from "../components/modules/QueueList";
+
+function TimePill() {
+  const [time, setTime] = useState<string | null>(null);
+
+  useEffect(() => {
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      setTime(`${hours}:${minutes}`);
+    }
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!time) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: "14px",
+        left: "24px",
+        padding: "4px 12px",
+        borderRadius: "999px",
+        background: "var(--foreground)",
+        color: "var(--background)",
+        fontSize: "11px",
+        fontWeight: 500,
+        letterSpacing: "0.05em",
+        zIndex: 1000,
+      }}
+    >
+      {time}
+    </div>
+  );
+}
 
 type Module = {
   id: string;
@@ -173,7 +211,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen w-full p-6 flex items-center justify-center overflow-x-auto">
+    <div className="min-h-screen w-full p-6 pt-16 flex items-center justify-center overflow-x-auto">
+      <TimePill />
       <div style={{ width: "fit-content" }}>
         <Masonry
           breakpointCols={masonryBreakpoints}
