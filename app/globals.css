@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 :root { --background: #ffe0ba; --foreground: #100414; }
-html[data-theme="p0"] { --background: #ffe0ba; --foreground: #100414; }
-html[data-theme="p1"] { --background: #e6f7ff; --foreground: #003049; }
-html[data-theme="p2"] { --background: #e8fff4; --foreground: #003827; }
-html[data-theme="p3"] { --background: #fff7e6; --foreground: #7a2b1f; }
-html[data-theme="p4"] { --background: #f5e8ff; --foreground: #2e004f; }
+html[data-theme="t1"] { --background: #ffe0ba; --foreground: #100414; }
+html[data-theme="t1-inv"] { --background: #100414; --foreground: #ffe0ba; }
+html[data-theme="t2"] { --background: #e6f7ff; --foreground: #003049; }
+html[data-theme="t2-inv"] { --background: #003049; --foreground: #e6f7ff; }
+html[data-theme="t3"] { --background: #e8fff4; --foreground: #003827; }
+html[data-theme="t3-inv"] { --background: #003827; --foreground: #e8fff4; }
 
 * { border-radius: 0 !important; }
 
@@ -25,9 +26,8 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
 .masonry-column > div { margin-bottom: 16px; }
 
 .theme-switcher { position: fixed; bottom: 14px; right: 14px; z-index: 9999; }
-.theme-switcher-button { width: 24px; height: 24px; border-radius: 9999px !important; display: flex; align-items: center; justify-content: center; border: 2px solid var(--foreground); background: transparent; cursor: pointer; padding: 0; }
+.theme-switcher-button { width: 24px; height: 24px; border-radius: 9999px !important; display: flex; align-items: center; justify-content: center; border: 0.5px solid var(--foreground); background: transparent; cursor: pointer; padding: 0; }
 .theme-switcher-button:focus { outline: 2px solid var(--foreground); outline-offset: 2px; }
-.theme-switcher-dot { width: 12px; height: 12px; border-radius: 9999px !important; background: var(--background); border: 1px solid var(--foreground); }
 
 .settings-wrapper { position: fixed; top: 14px; right: 14px; z-index: 9998; }
 .settings-button { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; padding: 0; cursor: pointer; color: var(--foreground); border-radius: 6px; }
