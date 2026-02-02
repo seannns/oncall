@@ -2,7 +2,7 @@ import React from "react";
 
 export default function QueueOverview({ id, title, userData }: { id: string; title: string; userData?: number[] }) {
   // Placeholder hourly data (8am - 5pm)
-  const hours = ["8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm"];
+  const hours = ["8a","9a","10a","11a","12p","1p","2p","3p","4p","5p"];
   const data = [12, 8, 3, 14, 20, 16, 10, 18, 22, 15];
 
   const max = Math.max(...data);
@@ -78,7 +78,7 @@ export default function QueueOverview({ id, title, userData }: { id: string; tit
                   {userV}
                 </text>
                 {/* hour label */}
-                <text x={x + barWidth / 2} y={labelY} fontSize={16} fill="var(--foreground)" textAnchor="middle">{hours[i].toUpperCase()}</text>
+                <text x={x + barWidth / 2} y={labelY} fontSize={16} fill="var(--foreground)" textAnchor="middle">{hours[i]}</text>
               </g>
             );
           })}
@@ -86,23 +86,23 @@ export default function QueueOverview({ id, title, userData }: { id: string; tit
       </div>
 
       {/* legend */}
-      <div className="queue-legend">
+      <div className="queue-legend text-[10px]">
         <div className="flex items-center gap-1">
-          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
             <defs>
               <pattern id="legendDiag" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)">
                 <rect width="4" height="4" fill="transparent" />
                 <path d="M0 0 L0 4" stroke="var(--foreground)" strokeWidth="1" strokeLinecap="square" />
               </pattern>
             </defs>
-            <rect x="0" y="0" width="12" height="12" fill="url(#legendDiag)" stroke="var(--foreground)" strokeWidth="1" />
+            <rect x="0" y="0" width="10" height="10" fill="url(#legendDiag)" stroke="var(--foreground)" strokeWidth="1" />
           </svg>
           <div>TOTAL</div>
         </div>
 
         <div className="flex items-center gap-1">
-          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
-            <rect x="0" y="0" width="12" height="12" fill="var(--foreground)" stroke="var(--foreground)" strokeWidth="1" />
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
+            <rect x="0" y="0" width="10" height="10" fill="var(--foreground)" stroke="var(--foreground)" strokeWidth="1" />
           </svg>
           <div>USER</div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef, useState } from "react";
+import Masonry from "react-masonry-css";
 import Schedule from "../components/modules/Schedule";
 import Transcript from "../components/modules/Transcript";
 import StatusSelector from "../components/modules/StatusSelector";
@@ -56,19 +57,47 @@ function ModuleCard({
       onDragOver={onDragOver}
       onDrop={(e) => onDrop(e, module.id)}
           className="flex cursor-grab select-none flex-col justify-between overflow-visible p-4 shadow-sm module-card border"
-      style={{ willChange: "transform" }}
+      style={{ willChange: "transform", width: "320px" }}
     >
       {ModuleComponent ? <ModuleComponent id={module.id} title={module.title} /> : null}
     </div>
   );
 }
 
+const STORAGE_KEY = "oncall-module-order";
+
 export default function Home() {
   const [modules, setModules] = useState<Module[]>(initialModules);
   const [dragId, setDragId] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
   const nodeRefs = useRef<Record<string, HTMLElement | null>>({});
   const prevRects = useRef<Record<string, DOMRect>>({});
+
+  // Load saved order from localStorage after hydration
+  React.useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const savedIds: string[] = JSON.parse(saved);
+        const ordered = savedIds
+          .map((id) => initialModules.find((m) => m.id === id))
+          .filter((m): m is Module => m !== undefined);
+        const remaining = initialModules.filter((m) => !savedIds.includes(m.id));
+        setModules([...ordered, ...remaining]);
+      } catch {
+        // keep default
+      }
+    }
+    setHydrated(true);
+  }, []);
+
+  // Save module order to localStorage whenever it changes (after hydration)
+  React.useEffect(() => {
+    if (!hydrated) return;
+    const ids = modules.map((m) => m.id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+  }, [modules, hydrated]);
 
   function captureRects() {
     const rects: Record<string, DOMRect> = {};
@@ -137,17 +166,19 @@ export default function Home() {
     // keep refs / layout stable
   }, [modules.length]);
 
+  const masonryBreakpoints = {
+    default: 3,
+    1000: 2,
+    680: 1,
+  };
+
   return (
-    <div className="min-h-screen w-full p-6 flex items-center justify-center">
-      <div className="w-full max-w-7xl">
-        <div
-          className="grid gap-4"
-          style={{
-            gridAutoRows: "minmax(110px, auto)",
-            gridAutoFlow: "dense",
-            gridTemplateColumns: "repeat(auto-fit, 320px)",
-            justifyContent: "center",
-          }}
+    <div className="min-h-screen w-full p-6 flex items-center justify-center overflow-x-auto">
+      <div style={{ width: "fit-content" }}>
+        <Masonry
+          breakpointCols={masonryBreakpoints}
+          className="masonry-grid"
+          columnClassName="masonry-column"
         >
           {modules.map((m) => {
             const ModuleComponent = m.component ? moduleComponents[m.component] ?? null : null;
@@ -163,7 +194,7 @@ export default function Home() {
               />
             );
           })}
-        </div>
+        </Masonry>
       </div>
     </div>
   );
